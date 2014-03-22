@@ -6,7 +6,8 @@ python:
 virtualenv:
   system_site_packages: true
 before_install:
-  - "sudo apt-get install -qq python-numpy python-scipy python-matplotlib python-mysqldb python-yaml ruby-bundler"
+  - "sudo apt-get -qq update"
+  - "sudo apt-get -qq install python-numpy python-scipy python-matplotlib python-mysqldb python-yaml ruby-bundler"
 install:
   - "bundle install"
   - "rake install_prereqs"
