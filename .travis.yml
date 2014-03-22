@@ -1,0 +1,14 @@
+language: python
+python:
+  - "2.7"
+# allow importing from site-packages, so we can install some Python
+# dependencies via apt-get instead of compiling them every time
+virtualenv:
+  system_site_packages: true
+before_install:
+  - "sudo apt-get install -qq python-numpy python-scipy python-matplotlib python-mysqldb python-yaml ruby-bundler"
+install:
+  - "bundle install"
+  - "rake install_prereqs"
+script:
+  - "rake test"
