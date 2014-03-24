@@ -30,9 +30,12 @@ before_install:
   - sudo ln -s /run/shm /dev/shm
 
 install:
-  - "conda install --yes python=$TRAVIS_PYTHON_VERSION numpy==1.6.2 scipy==0.11.0"
+  - "conda install --yes python=$TRAVIS_PYTHON_VERSION -r requirements/edx/pre.txt"
+  - "conda install --yes python=$TRAVIS_PYTHON_VERSION -r requirements/edx/base.txt"
+  - "conda install --yes python=$TRAVIS_PYTHON_VERSION -r requirements/edx/post.txt"
   - "bundle install"
-  - "rake install_prereqs"
+  - "npm install"
+  - export NO_PREREQ_INSTALL=true
 
 script:
   - "rake test"
