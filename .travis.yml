@@ -30,9 +30,9 @@ before_install:
   - sudo ln -s /run/shm /dev/shm
 
 install:
-  - "conda install --yes python=$TRAVIS_PYTHON_VERSION -r requirements/edx/pre.txt"
-  - "conda install --yes python=$TRAVIS_PYTHON_VERSION -r requirements/edx/base.txt"
-  - "conda install --yes python=$TRAVIS_PYTHON_VERSION -r requirements/edx/post.txt"
+  - "conda install --yes python=$TRAVIS_PYTHON_VERSION --file requirements/edx/pre.txt"
+  - "conda install --yes python=$TRAVIS_PYTHON_VERSION --file requirements/edx/base.txt"
+  - "conda install --yes python=$TRAVIS_PYTHON_VERSION --file requirements/edx/post.txt"
   - "bundle install"
   - "npm install"
   - export NO_PREREQ_INSTALL=true
