@@ -5,11 +5,18 @@ python:
 # dependencies via apt-get instead of compiling them every time
 virtualenv:
   system_site_packages: true
+services:
+  - mysql
+  - mongodb
 before_install:
   - "sudo apt-get -qq update"
   - "sudo apt-get -qq install python-numpy python-scipy python-matplotlib python-mysqldb python-yaml ruby-bundler"
+  # set up display for selenium testing
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
 install:
   - "bundle install"
   - "rake install_prereqs"
+
 script:
   - "rake test"
