@@ -10,6 +10,7 @@ services:
   - mongodb
 before_install:
   - "sudo apt-get -qq update"
+  # see also: https://gist.github.com/dan-blanchard/7045057
   - "sudo apt-get -qq install python-numpy python-scipy python-matplotlib python-mysqldb python-yaml ruby-bundler"
   # set up display for selenium testing
   - "export DISPLAY=:99.0"
