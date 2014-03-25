@@ -15,24 +15,29 @@ before_install:
 
   # install packages from apt-get
   - "sudo apt-get -qq update"
-  # - "sudo apt-get -qq install python-numpy python-scipy libblas-dev liblapack-dev python-lxml python-matplotlib python-mysqldb python-yaml ruby-bundler"
   - "sudo apt-get -qq install ruby-bundler"
+  # - "sudo apt-get -qq install python-numpy python-scipy libblas-dev liblapack-dev python-lxml python-matplotlib python-mysqldb python-yaml ruby-bundler"
 
-  # miniconda: https://gist.github.com/dan-blanchard/7045057
-  - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then wget http://repo.continuum.io/miniconda/Miniconda-3.3.0-Linux-x86_64.sh -O miniconda.sh; else wget http://repo.continuum.io/miniconda/Miniconda3-3.3.0-Linux-x86_64.sh -O miniconda.sh; fi
-  - chmod +x miniconda.sh
-  - ./miniconda.sh -b
-  - export PATH=$HOME/miniconda/bin:$PATH
-  - conda update --yes conda
-
-  # The next couple lines fix a crash with multiprocessing on Travis and are not specific to using Miniconda
-  - sudo rm -rf /dev/shm
-  - sudo ln -s /run/shm /dev/shm
+  # # miniconda: https://gist.github.com/dan-blanchard/7045057
+  # - if [ ${TRAVIS_PYTHON_VERSION:0:1} == "2" ]; then wget http://repo.continuum.io/miniconda/Miniconda-3.3.0-Linux-x86_64.sh -O miniconda.sh; else wget http://repo.continuum.io/miniconda/Miniconda3-3.3.0-Linux-x86_64.sh -O miniconda.sh; fi
+  # - chmod +x miniconda.sh
+  # - ./miniconda.sh -b
+  # - export PATH=$HOME/miniconda/bin:$PATH
+  # - conda update --yes conda
+  #
+  # # The next couple lines fix a crash with multiprocessing on Travis and are not specific to using Miniconda
+  # - sudo rm -rf /dev/shm
+  # - sudo ln -s /run/shm /dev/shm
 
 install:
-  - "conda install --yes python=$TRAVIS_PYTHON_VERSION --file requirements/edx/pre.txt"
-  - "conda install --yes python=$TRAVIS_PYTHON_VERSION --file requirements/edx/base.txt"
-  - "conda install --yes python=$TRAVIS_PYTHON_VERSION --file requirements/edx/post.txt"
+  # - "conda install --yes python=$TRAVIS_PYTHON_VERSION --file requirements/edx/pre.txt"
+  # - "conda install --yes python=$TRAVIS_PYTHON_VERSION --file requirements/edx/base.txt"
+  # - "conda install --yes python=$TRAVIS_PYTHON_VERSION --file requirements/edx/post.txt"
+  - "pip install wheel"
+  - 'export PIP_ARGS="--use-wheel --find-links=http://pandas.pydata.org/pandas-build/dev/wheels/$TRAVIS_PYTHON_VERSION/ --allow-external --allow-insecure"'
+  - "pip install $PIP_ARGS -r requirements/edx/pre.txt"
+  - "pip install $PIP_ARGS -r requirements/edx/base.txt"
+  - "pip install $PIP_ARGS -r requirements/edx/post.txt"
   - "bundle install"
   - "npm install"
   - export NO_PREREQ_INSTALL=true
