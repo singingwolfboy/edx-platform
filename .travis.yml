@@ -34,7 +34,7 @@ install:
   # - "conda install --yes python=$TRAVIS_PYTHON_VERSION --file requirements/edx/base.txt"
   # - "conda install --yes python=$TRAVIS_PYTHON_VERSION --file requirements/edx/post.txt"
   - "pip install wheel"
-  - 'export PIP_ARGS="--use-wheel --find-links=http://pandas.pydata.org/pandas-build/dev/wheels/$TRAVIS_PYTHON_VERSION/ --allow-external --allow-insecure"'
+  - 'export PIP_ARGS="--use-wheel --find-links=http://edx-wheels.s3-website-us-east-1.amazonaws.com/ --allow-external --allow-insecure"'
   - "pip install $PIP_ARGS -r requirements/edx/pre.txt"
   - "pip install $PIP_ARGS -r requirements/edx/base.txt"
   - "pip install $PIP_ARGS -r requirements/edx/post.txt"
