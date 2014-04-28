@@ -1,10 +1,10 @@
 language: python
 python:
   - "2.7"
-# allow importing from site-packages, so we can install some Python
-# dependencies via apt-get instead of compiling them every time
-virtualenv:
-  system_site_packages: true
+# # allow importing from site-packages, so we can install some Python
+# # dependencies via apt-get instead of compiling them every time
+# virtualenv:
+#   system_site_packages: true
 services:
   - mysql
   - mongodb
