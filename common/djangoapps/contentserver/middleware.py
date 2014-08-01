@@ -75,7 +75,48 @@ class StaticContentServer(object):
                 if if_modified_since == last_modified_at_str:
                     return HttpResponseNotModified()
 
-            response = HttpResponse(content.stream_data(), content_type=content.content_type)
+            # *** File streaming within a byte range ***
+            # If a Range is provided, parse Range attribute of the request
+            # Add Content-Range in the response if Range is structurally correct
+            # Request -> Range attribute structure: "Range: bytes=first-[last]"
+            # Response -> Content-Range attribute structure: "Content-Range: bytes first-last/totalLength"
+            response = None
+            if request.META.get('HTTP_RANGE'):
+                range_header = request.META['HTTP_RANGE']
+                if '=' in range_header:
+                    unit, range = range_header.split('=')
+                    if unit == 'bytes' and '-' in range:
+                        first, last = range.split('-')
+                        try:
+                            first = int(first)
+                        except ValueError:
+                            first = 0
+                        try:
+                            last = int(last)
+                        except ValueError:
+                            last = content.length - 1
+                        
+                        if 0 <= first <= last < content.length:
+                            # Valid Range attribute
+                            response = HttpResponse(content.stream_data_in_range(first, last))
+                            response['Content-Range'] = 'bytes {first}-{last}/{length}'.format(
+                                first=first, last=last, length=content.length
+                            )
+                            response['Content-Length'] = str(last - first + 1)
+                            response.status_code = 206 # HTTP_206_PARTIAL_CONTENT
+                if not response:
+                    # Malformed Range attribute
+                    response = HttpResponse()
+                    response.status_code = 400 # HTTP_400_BAD_REQUEST
+                    return response
+            
+            else:
+                # No Range attribute
+                response = HttpResponse(content.stream_data())
+                response['Content-Length'] = content.length
+            
+            response['Accept-Ranges'] = 'bytes'
+            response['Content-Type'] = content.content_type
             response['Last-Modified'] = last_modified_at_str
 
             return response
