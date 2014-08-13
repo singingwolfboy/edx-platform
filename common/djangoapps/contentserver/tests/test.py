@@ -4,6 +4,7 @@ Tests for StaticContentServer
 import copy
 import logging
 from uuid import uuid4
+from mock import patch
 
 from django.conf import settings
 from django.test.client import Client
@@ -101,10 +102,14 @@ class ContentStoreToyCourseTest(ModuleStoreTestCase):
         resp = self.client.get(self.url_locked)
         self.assertEqual(resp.status_code, 200) # pylint: disable=E1103
 
-    def test_range_request_full_file(self):
+    @patch("common.djangoapps.contentserver.middleware.contentstore")
+    def test_range_request_full_file(self, mock_contentstore):
         """
         Test that a range request from byte 0 to last outputs partial content status code and valid Content-Range.
         """
+        mock_content = mock_contentstore.return_value.find.return_value
+        mock_content.length = 5
+
         resp = self.client.get(self.url_unlocked, HTTP_RANGE='bytes=0-')
         self.assertEqual(resp.status_code, 206) # HTTP_206_PARTIAL_CONTENT
         self.assertEqual(resp['Content-Range'], 'bytes {first}-{last}/{length}'.format(
@@ -135,7 +140,7 @@ class ContentStoreToyCourseTest(ModuleStoreTestCase):
         """
         resp = self.client.get(self.url_unlocked, HTTP_RANGE='bytes 0-')
         self.assertEqual(resp.status_code, 400) # HTTP_400_BAD_REQUEST
-        
+
 
     def test_range_request_malformed_missing_minus(self):
         """
@@ -166,4 +171,4 @@ class ContentStoreToyCourseTest(ModuleStoreTestCase):
             )
         )
         self.assertEqual(resp.status_code, 400) # HTTP_400_BAD_REQUEST
-        
+
